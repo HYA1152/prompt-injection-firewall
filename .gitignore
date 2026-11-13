@@ -218,3 +218,31 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Project-specific (prompt-injection-firewall) ---
+# Secrets / credentials (never commit)
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.p12
+*token*
+*secret*
+credentials*.json
+client_secret*.json
+service-account*.json
+.huggingface/
+.kaggle/
+
+# Data and large result files (regenerate with the notebooks; see README)
+*.csv
+*.parquet
+*.jsonl
+*.pt
+*.pth
+*.bin
+*.safetensors
+data/
+outputs/
+checkpoints/
