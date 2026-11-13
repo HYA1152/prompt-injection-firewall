@@ -246,3 +246,7 @@ service-account*.json
 data/
 outputs/
 checkpoints/
+
+# Exception: small aggregate result table
+!results/
+!results/tohum_ozet.csv
