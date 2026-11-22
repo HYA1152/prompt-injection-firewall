@@ -2,6 +2,19 @@
 
 **English** | [Türkçe](#türkçe)
 
+## Security check — 22 November 2026
+
+After adding notebook `07_aile_deneyi.ipynb` and the files `results/aile_sonuclari.csv` and `results/aile_referans_yakalama.csv`: manual review by Hasan Yiğit Aydoğan, independently re-checked by Claude. Result: **no problems found.**
+
+| Check | Result |
+|---|---|
+| API keys, tokens, passwords, private keys (files and full history) | None found |
+| Private Google Drive file IDs | None (replaced by a placeholder in notebooks) |
+| E-mail addresses | None found |
+| Notebook outputs | Cleared (0 outputs) |
+| New CSV files | Aggregate numbers only, no dataset texts |
+| `.gitignore` still blocks `.env`, keys, datasets and per-example files | Tested, all ignored |
+
 ## Security check — 13 November 2026
 
 Manual review by Hasan Yiğit Aydoğan, independently re-checked by Claude (automated scan of all tracked files and the full commit history). Result: **no problems found.**
@@ -33,6 +46,19 @@ Open an issue or contact the repository owner if you find a security problem.
 <a id="türkçe"></a>
 
 # Türkçe
+
+## Güvenlik kontrolü — 22 Kasım 2026
+
+`07_aile_deneyi.ipynb` defteri ile `results/aile_sonuclari.csv` ve `results/aile_referans_yakalama.csv` dosyaları eklendikten sonra Hasan Yiğit Aydoğan elle kontrol etti, Claude bağımsız olarak tekrar kontrol etti. Sonuç: **sorun bulunmadı.**
+
+| Kontrol | Sonuç |
+|---|---|
+| API anahtarı, token, parola, özel anahtar (dosyalar ve tüm geçmiş) | Yok |
+| Özel Google Drive dosya numaraları | Yok (defterlerde yer tutucuyla değiştirildi) |
+| E-posta adresi | Yok |
+| Defter çıktıları | Temiz (0 çıktı) |
+| Yeni CSV dosyaları | Yalnızca toplu sayılar, veri seti metni yok |
+| `.gitignore`: `.env`, anahtarlar, veri setleri ve örnek başına dosyalar | Denendi, hepsi engelleniyor |
 
 ## Güvenlik kontrolü — 13 Kasım 2026
 
