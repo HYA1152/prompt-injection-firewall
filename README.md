@@ -71,7 +71,9 @@ flowchart LR
   <tr><td><code>04_anahtar_kelime_filtresi.ipynb</code></td><td>Keyword/regex baseline</td></tr>
   <tr><td><code>05_egitim_olcum.ipynb</code></td><td>Main training and evaluation: leave-one-dataset-out, reference run, external tests</td></tr>
   <tr><td><code>06_olasilik_tohumlar.ipynb</code></td><td>Seeds 43 and 44, per-example probabilities, probability–length analysis, 3-seed summary</td></tr>
+  <tr><td><code>07_aile_deneyi.ipynb</code></td><td>Attack-family hold-out: train on wambosec only, remove one of 14 attack families per run</td></tr>
   <tr><td><code>results/tohum_ozet.csv</code></td><td>3-seed summary table (mean ± std)</td></tr>
+  <tr><td><code>results/aile_*.csv</code></td><td>Attack-family hold-out results (BERT and RoBERTa)</td></tr>
 </table>
 
 The notebooks are written for Google Colab (a free GPU is enough). Their explanations are in Turkish.
@@ -80,7 +82,7 @@ The notebooks are written for Google Colab (a free GPU is enough). Their explana
 <summary><b>Reproducing</b></summary>
 
 - The datasets are **not stored in this repository**. Notebook `03` downloads the public datasets from Hugging Face and produces `veri_birlesik.csv` itself.
-- Run the notebooks in order (`01` → `06`) in Colab. Notebooks `05` and `06` download `veri_birlesik.csv` from Google Drive by file ID: upload your own copy (produced by `03`) to your Drive and put its ID in place of `BURAYA_DRIVE_DOSYA_NUMARASI`.
+- Run the notebooks in order (`01` → `07`) in Colab. Notebooks `05` and `06` download `veri_birlesik.csv` from Google Drive by file ID: upload your own copy (produced by `03`) to your Drive and put its ID in place of `BURAYA_DRIVE_DOSYA_NUMARASI`.
 - Notebook outputs are cleared; the aggregated results are in `results/`. Per-example predictions are not published (they contain dataset texts).
 - No API keys or credentials are needed or stored here. Never commit `.env` files or tokens (they are in `.gitignore`).
 
@@ -108,9 +110,10 @@ Fine-tuned BERT and RoBERTa, 3 training seeds (42, 43, 44), mean ± standard dev
 - **No clear winner between BERT and RoBERTa** in accuracy (difference at most 0.003 on the held-out sets). A tendency in favour of RoBERTa when `wambosec` is held out (higher ROC-AUC, lower false-alarm rate) was not tested with n = 3 and is not claimed as a general advantage.
 - **The 1 % false-alarm target does not hold on unseen data.** With a threshold fixed on a validation split, the real false-alarm rate on held-out datasets is 2 %–52 % (and 7 %–66 % on the external test sets). Only RoBERTa on `wambosec` is close to the target.
 - **`safeguard` is the hardest.** With it held out, roughly half of the benign prompts are blocked. Its harmful prompts are short single-line templates (median 95 characters), its benign prompts are long multi-line task prompts (median 186). The models' own "malicious" probability on benign `safeguard` text rises with length (Spearman 0.50 BERT, 0.55 RoBERTa; false alarms 25–29 % in the shortest quarter, 92–99 % in the longest; single seed). This is a **correlation, not proof** that length is the cause.
+- **An unseen attack *type* is not the main problem.** When the models are trained on `wambosec` only and one of its 14 attack families is removed, they still detect that family well: on average 98% (BERT, min 92%) and 96% (RoBERTa, min 86%), with at most 2% false alarms (seed 42, one dataset). Together with the leave-one-dataset-out drop, this suggests the drop comes mainly from differences between datasets rather than from new attack types.
 - **A simple keyword filter** (22 patterns) beats the models on `safeguard` accuracy (0.77 vs 0.56) but catches few attacks elsewhere (recall 0.08–0.29 except on `jackhhao`).
 
-**Limitations:** 3 seeds only (no significance tests), fixed data split and threshold set, no hyperparameter search, small and partly multilingual external test sets (`deepset`), and no family-level (attack type) hold-out experiment yet.
+**Limitations:** 3 seeds only (no significance tests), fixed data split and threshold set, no hyperparameter search, small and partly multilingual external test sets (`deepset`); the attack-family experiment uses one dataset and one seed.
 
 ### License and data
 
@@ -171,7 +174,9 @@ flowchart LR
   <tr><td><code>04_anahtar_kelime_filtresi.ipynb</code></td><td>Anahtar kelime / regex kıyas filtresi</td></tr>
   <tr><td><code>05_egitim_olcum.ipynb</code></td><td>Ana eğitim ve ölçüm: bir seti dışarıda bırakma, referans koşu, dış testler</td></tr>
   <tr><td><code>06_olasilik_tohumlar.ipynb</code></td><td>Tohum 43 ve 44, örnek başına olasılıklar, olasılık–uzunluk analizi, 3 tohumluk özet</td></tr>
+  <tr><td><code>07_aile_deneyi.ipynb</code></td><td>Saldırı ailesi deneyi: yalnızca wambosec ile eğit, her koşuda 14 saldırı ailesinden birini çıkar</td></tr>
   <tr><td><code>results/tohum_ozet.csv</code></td><td>3 tohumluk özet tablo (ortalama ± std)</td></tr>
+  <tr><td><code>results/aile_*.csv</code></td><td>Saldırı ailesi deneyinin sonuçları (BERT ve RoBERTa)</td></tr>
 </table>
 
 Defterler Google Colab için yazıldı (ücretsiz GPU yeterli). Açıklamalar Türkçedir.
@@ -180,7 +185,7 @@ Defterler Google Colab için yazıldı (ücretsiz GPU yeterli). Açıklamalar T�
 <summary><b>Yeniden üretme</b></summary>
 
 - Veri setleri bu depoda **tutulmaz**. `03` defteri açık veri setlerini Hugging Face'ten indirir ve `veri_birlesik.csv` dosyasını kendisi üretir.
-- Defterleri Colab'da sırayla çalıştırın (`01` → `06`). `05` ve `06` defterleri `veri_birlesik.csv` dosyasını Google Drive'dan dosya numarasıyla indirir: `03` ile ürettiğiniz kendi kopyanızı Drive'ınıza yükleyip numarasını `BURAYA_DRIVE_DOSYA_NUMARASI` yerine yazın.
+- Defterleri Colab'da sırayla çalıştırın (`01` → `07`). `05` ve `06` defterleri `veri_birlesik.csv` dosyasını Google Drive'dan dosya numarasıyla indirir: `03` ile ürettiğiniz kendi kopyanızı Drive'ınıza yükleyip numarasını `BURAYA_DRIVE_DOSYA_NUMARASI` yerine yazın.
 - Defter çıktıları temizlendi; toplu sonuçlar `results/` içinde. Örnek başına tahminler yayımlanmıyor (veri seti metinlerini içerir).
 - Burada hiçbir API anahtarı veya kimlik bilgisi kullanılmaz ya da saklanmaz. `.env` dosyalarını ve token'ları asla commit etmeyin (`.gitignore` içindedir).
 
@@ -208,9 +213,10 @@ Defterler Google Colab için yazıldı (ücretsiz GPU yeterli). Açıklamalar T�
 - **BERT ile RoBERTa arasında doğrulukta net bir fark yok** (dışarıda bırakılan setlerde fark en fazla 0,003). `wambosec` dışarıda bırakılınca RoBERTa lehine bir eğilim (daha yüksek ROC-AUC, daha düşük yanlış alarm) var, ama n = 3 ile test edilmedi ve genel bir üstünlük olarak yazılmıyor.
 - **%1 yanlış alarm hedefi görülmeyen veride tutmuyor.** Doğrulama bölmesinde sabitlenen eşikle dışarıda bırakılan veri setlerinde gerçek yanlış alarm oranı %2–%52 (dış test setlerinde %7–%66). Hedefe yakın tek sonuç `wambosec` üzerinde RoBERTa.
 - **`safeguard` en zor olanı.** Dışarıda bırakılınca zararsız istemlerin yaklaşık yarısı engelleniyor. Zararlı örnekleri kısa tek satırlık şablonlar (ortanca 95 karakter), zararsız örnekleri uzun çok satırlı görev istemleri (ortanca 186). Modellerin kendi "zararlı" olasılığı, zararsız `safeguard` metninde uzunlukla artıyor (Spearman 0,50 BERT, 0,55 RoBERTa; yanlış alarm en kısa dörtte birde %25–29, en uzun dörtte birde %92–99; tek tohum). Bu bir **korelasyondur**, nedenin uzunluk olduğunun kanıtı değildir.
+- **Asıl sorun görülmemiş saldırı *türü* değil.** Modeller yalnızca `wambosec` ile eğitilip 14 saldırı ailesinden biri çıkarıldığında, o aileyi yine iyi yakalıyor: ortalama %98 (BERT, en düşük %92) ve %96 (RoBERTa, en düşük %86), yanlış alarm en fazla %2 (tohum 42, tek veri seti). Veri seti dışarıda bırakıldığındaki düşüşle birlikte bu, düşüşün asıl kaynağının yeni saldırı türü değil veri setleri arasındaki farklar olduğuna işaret ediyor.
 - **Basit anahtar kelime filtresi** (22 kalıp) `safeguard` doğruluğunda modelleri geçiyor (0,77 karşı 0,56) ama diğer veri setlerinde saldırıların azını yakalıyor (`jackhhao` hariç yakalama 0,08–0,29).
 
-**Sınırlılıklar:** yalnızca 3 tohum (anlamlılık testi yok), sabit veri bölmesi ve eşik seti, hiperparametre araması yok, küçük ve kısmen çok dilli dış test setleri (`deepset`), saldırı ailesi bazında dışarıda bırakma deneyi henüz yok.
+**Sınırlılıklar:** yalnızca 3 tohum (anlamlılık testi yok), sabit veri bölmesi ve eşik seti, hiperparametre araması yok, küçük ve kısmen çok dilli dış test setleri (`deepset`); saldırı ailesi deneyi tek veri seti ve tek tohumla yapıldı.
 
 ### Lisans ve veri
 
