@@ -250,3 +250,5 @@ checkpoints/
 # Exception: small aggregate result table
 !results/
 !results/tohum_ozet.csv
+!results/aile_sonuclari.csv
+!results/aile_referans_yakalama.csv
